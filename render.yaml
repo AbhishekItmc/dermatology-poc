@@ -2,7 +2,6 @@ databases:
   # PostgreSQL Database
   - name: dermatology-postgres
     databaseName: dermatology_poc
-    user: postgres
     plan: free
 
 services:
