@@ -1,19 +1,15 @@
 databases:
-  # PostgreSQL Database
   - name: dermatology-postgres
     databaseName: dermatology_poc
     plan: free
 
 services:
-
-  # Redis Cache
   - type: redis
     name: dermatology-redis
     plan: free
     maxmemoryPolicy: noeviction
     ipAllowList: []
 
-  # Backend API
   - type: web
     name: dermatology-backend
     env: docker
@@ -41,7 +37,7 @@ services:
           name: dermatology-redis
           property: host
       - key: REDIS_PORT
-        value: 6379
+        value: "6379"
       - key: ENVIRONMENT
         value: production
       - key: SECRET_KEY
@@ -49,7 +45,6 @@ services:
       - key: ENCRYPTION_KEY
         generateValue: true
 
-  # Frontend
   - type: web
     name: dermatology-frontend
     env: docker
@@ -57,7 +52,4 @@ services:
     plan: free
     envVars:
       - key: REACT_APP_API_URL
-        fromService:
-          type: web
-          name: dermatology-backend
-          property: host
+        value: https://dermatology-backend.onrender.com/api/v1
