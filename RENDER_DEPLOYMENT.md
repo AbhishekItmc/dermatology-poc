@@ -8,23 +8,7 @@
 
 ### 2. Push Code to GitHub
 
-If you haven't already, push your code to GitHub:
-
-```powershell
-# Initialize git (if not already done)
-git init
-
-# Add all files
-git add .
-
-# Commit
-git commit -m "Initial commit - Dermatological Analysis PoC"
-
-# Create a new repository on GitHub, then:
-git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
-git branch -M main
-git push -u origin main
-```
+✅ **Already done!** Your code is at: https://github.com/AbhishekItmc/dermatology-poc
 
 ### 3. Deploy on Render
 
@@ -32,9 +16,11 @@ git push -u origin main
 
 1. Go to https://render.com/dashboard
 2. Click "New" → "Blueprint"
-3. Connect your GitHub repository
+3. Connect your GitHub repository: `AbhishekItmc/dermatology-poc`
 4. Render will automatically detect `render.yaml` and create all services
 5. Click "Apply" to deploy
+
+**Note**: The backend uses an optimized Dockerfile (`Dockerfile.render`) with lighter dependencies for faster deployment on the free tier. Full ML features require the standard Dockerfile with all dependencies.
 
 #### Option B: Manual Deployment (Deploy Services Individually)
 
@@ -105,6 +91,19 @@ Use these credentials:
 - Services spin down after 15 minutes of inactivity
 - First request after spin-down takes 30-60 seconds to wake up
 - 750 hours/month free (enough for demo purposes)
+- **ML features disabled** - The optimized deployment uses lighter dependencies for faster builds. Full ML analysis requires upgrading to a paid plan or using the full Dockerfile.
+
+### Deployment Optimizations
+The backend is deployed with `Dockerfile.render` which uses `requirements-render.txt` - a lighter dependency set that:
+- Builds faster (5-10 minutes vs 20-30 minutes)
+- Uses less memory during build
+- Includes core API functionality, authentication, and database features
+- **Does not include**: Heavy ML libraries (torch, opencv, mediapipe, etc.)
+
+To enable full ML features:
+1. Upgrade to a paid Render plan (Starter: $7/month)
+2. Update `render.yaml` to use `./backend/Dockerfile` instead of `./backend/Dockerfile.render`
+3. Redeploy the service
 
 ### Troubleshooting
 
