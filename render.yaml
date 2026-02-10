@@ -18,6 +18,7 @@ services:
     name: dermatology-redis
     plan: free
     maxmemoryPolicy: noeviction
+    ipAllowList: []
 
   # Backend API
   - type: web
