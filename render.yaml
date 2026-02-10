@@ -1,0 +1,69 @@
+services:
+  # PostgreSQL Database
+  - type: pserv
+    name: dermatology-postgres
+    env: docker
+    plan: free
+    dockerfilePath: ./Dockerfile.postgres
+    envVars:
+      - key: POSTGRES_USER
+        value: postgres
+      - key: POSTGRES_PASSWORD
+        generateValue: true
+      - key: POSTGRES_DB
+        value: dermatology_poc
+
+  # Redis Cache
+  - type: redis
+    name: dermatology-redis
+    plan: free
+    maxmemoryPolicy: noeviction
+
+  # Backend API
+  - type: web
+    name: dermatology-backend
+    env: docker
+    dockerfilePath: ./backend/Dockerfile
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: POSTGRES_SERVER
+        fromService:
+          type: pserv
+          name: dermatology-postgres
+          property: host
+      - key: POSTGRES_USER
+        value: postgres
+      - key: POSTGRES_PASSWORD
+        fromService:
+          type: pserv
+          name: dermatology-postgres
+          envVarKey: POSTGRES_PASSWORD
+      - key: POSTGRES_DB
+        value: dermatology_poc
+      - key: REDIS_HOST
+        fromService:
+          type: redis
+          name: dermatology-redis
+          property: host
+      - key: REDIS_PORT
+        value: 6379
+      - key: ENVIRONMENT
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ENCRYPTION_KEY
+        generateValue: true
+
+  # Frontend
+  - type: web
+    name: dermatology-frontend
+    env: docker
+    dockerfilePath: ./frontend/Dockerfile
+    plan: free
+    envVars:
+      - key: REACT_APP_API_URL
+        fromService:
+          type: web
+          name: dermatology-backend
+          property: host

@@ -1,0 +1,6 @@
+FROM postgres:16-alpine
+
+ENV POSTGRES_USER=postgres
+ENV POSTGRES_DB=dermatology_poc
+
+EXPOSE 5432
