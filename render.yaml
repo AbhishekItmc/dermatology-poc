@@ -1,17 +1,11 @@
-services:
+databases:
   # PostgreSQL Database
-  - type: pserv
-    name: dermatology-postgres
-    env: docker
+  - name: dermatology-postgres
+    databaseName: dermatology_poc
+    user: postgres
     plan: free
-    dockerfilePath: ./Dockerfile.postgres
-    envVars:
-      - key: POSTGRES_USER
-        value: postgres
-      - key: POSTGRES_PASSWORD
-        generateValue: true
-      - key: POSTGRES_DB
-        value: dermatology_poc
+
+services:
 
   # Redis Cache
   - type: redis
@@ -29,17 +23,17 @@ services:
     healthCheckPath: /health
     envVars:
       - key: POSTGRES_SERVER
-        fromService:
-          type: pserv
+        fromDatabase:
           name: dermatology-postgres
           property: host
       - key: POSTGRES_USER
-        value: postgres
-      - key: POSTGRES_PASSWORD
-        fromService:
-          type: pserv
+        fromDatabase:
           name: dermatology-postgres
-          envVarKey: POSTGRES_PASSWORD
+          property: user
+      - key: POSTGRES_PASSWORD
+        fromDatabase:
+          name: dermatology-postgres
+          property: password
       - key: POSTGRES_DB
         value: dermatology_poc
       - key: REDIS_HOST
