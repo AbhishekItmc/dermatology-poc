@@ -13,7 +13,7 @@ from app.models.schemas import (
     AnalysisResultResponse,
     ErrorResponse
 )
-from app.services.analysis_service import AnalysisService
+from app.services import AnalysisService, ML_AVAILABLE
 from app.core.storage import get_image_storage, ImageStorage
 from app.core.auth import get_current_user, require_roles, TokenData, UserRole
 from app.core.audit import log_audit_event, AuditAction
@@ -28,6 +28,11 @@ analysis_status: Dict[str, Dict[str, Any]] = {}
 
 def get_analysis_service() -> AnalysisService:
     """Dependency to get analysis service instance"""
+    if not ML_AVAILABLE:
+        raise HTTPException(
+            status_code=503,
+            detail="Analysis service unavailable - ML dependencies not installed"
+        )
     return AnalysisService()
 
 

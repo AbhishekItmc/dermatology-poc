@@ -17,7 +17,7 @@ services:
   - type: web
     name: dermatology-backend
     env: docker
-    dockerfilePath: ./backend/Dockerfile
+    dockerfilePath: ./backend/Dockerfile.render
     plan: free
     healthCheckPath: /health
     envVars:
